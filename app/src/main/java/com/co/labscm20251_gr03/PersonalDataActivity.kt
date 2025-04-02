@@ -133,11 +133,13 @@ fun Formulario() {
             )
 
         }
-
-        Text(text = "Fecha de Nacimiento*")
-        Button(onClick = { datePickerDialog.show() }) {
-            Text(fechaNacimiento)
+        Row{
+            Text(text = "Fecha de Nacimiento*")
+            Button(onClick = { datePickerDialog.show() }) {
+                Text(fechaNacimiento)
+            }
         }
+
 
 
 
@@ -163,7 +165,7 @@ fun Formulario() {
         }
 
         Button(onClick = { println("la buena, pero falta validar los campos obligatorios") }) {
-            Text("Enviar") //Todo: validar los campos obligatorios
+            Text("Siguiente") //Todo: validar los campos obligatorios
         }
 
     }
