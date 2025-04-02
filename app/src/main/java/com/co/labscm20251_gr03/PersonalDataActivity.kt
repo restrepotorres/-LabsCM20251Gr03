@@ -6,9 +6,14 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,17 +33,12 @@ class PersonalDataActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            LabsCM20251Gr03Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+            Formulario()
+
             }
         }
     }
-}
+
 
 @Composable
 fun Greeting(name: String, modifier: Modifier = Modifier) {
@@ -53,7 +53,7 @@ fun Formulario() {
     var nombres: String
     var nombre by remember { mutableStateOf(TextFieldValue()) }
     var apellidos by remember { mutableStateOf(TextFieldValue()) }
-    var sexo: String
+    var sexo by remember { mutableStateOf("") }
     var fechaNacimiento: LocalDate
     var gradoEscolaridad = listOf<String>("Primaria", "Secundaria", "Universitaria", "Otro")
 
@@ -73,6 +73,27 @@ fun Formulario() {
             onValueChange = { apellidos = it },
             label = { Text("Apellidos*") }
         )
+
+        Text(text = "Sexo*")
+        Row{
+            Text("Masculino")
+            Spacer(modifier = Modifier.width(16.dp))
+            RadioButton(
+                selected = sexo == "Masculino",
+                onClick = {sexo = "Masculino"}
+            )
+
+            Text("Femenino")
+            Spacer(modifier = Modifier.width(16.dp))
+            RadioButton(
+                selected = (sexo == "Femenino"),
+                onClick = {sexo = "Femenino"}
+            )
+
+        }
+        Button(onClick = { println("la buena") }) {
+            Text("Enviar")
+        }
 
     }
 }
