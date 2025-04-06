@@ -1,5 +1,6 @@
 package com.co.labscm20251_gr03
 
+import android.R.attr.text
 import android.app.DatePickerDialog
 import android.icu.text.DisplayOptions.Capitalization
 import android.os.Bundle
@@ -12,8 +13,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -33,6 +37,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -65,16 +70,15 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 
 @Composable
 fun Formulario() {
-    var nombres: String
     var nombre by rememberSaveable { mutableStateOf("")}
     var apellidos by rememberSaveable { mutableStateOf("")}
-    var sexo by rememberSaveable { mutableStateOf("")}
+
     var fechaNacimiento by rememberSaveable { mutableStateOf("Seleccionar fecha") }
     var escolaridad by rememberSaveable {mutableStateOf("")}
     val opcionesEscolaridad = listOf("Primaria", "Secundaria", "Universitaria", "Otro")
     var expanded by rememberSaveable { mutableStateOf(false) }
-
-
+    val opcionesDeSexo = listOf("Hombre","Mujer","Otro","Prefiero no decirlo")
+    val (sexoElegido, onOptionSelected) = rememberSaveable { mutableStateOf(opcionesDeSexo[3]) }
 
     val datePickerDialog = DatePickerDialog(
         LocalContext.current,
@@ -116,33 +120,35 @@ fun Formulario() {
         )
 
         Text(text = "Sexo*")
-        Row {
-            Text("Masculino")
-            RadioButton(
-                selected = sexo == "Masculino",
-                onClick = { sexo = "Masculino" }
-            )
-            Text("Femenino")
-            RadioButton(
-                selected = (sexo == "Femenino"),
-                onClick = { sexo = "Femenino" }
-            )
-            Text("Otro")
-            RadioButton(
-                selected = (sexo == "Otro"),
-                onClick = { sexo = "Otro" }
-            )
 
+        Column (modifier = Modifier.selectableGroup()){
+            opcionesDeSexo.forEach { opcion -> Row (Modifier.selectable(
+                selected = (opcion == sexoElegido),
+                onClick = { onOptionSelected(opcion) },
+                role = Role.RadioButton
+            )
+            ){
+                RadioButton(
+                    selected = (opcion == sexoElegido),
+                    onClick = null
+                )
+
+                Text(
+                    text = opcion,
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.padding(start = 16.dp)
+                )
+
+
+            } }
         }
+
         Row{
             Text(text = "Fecha de Nacimiento*")
             Button(onClick = { datePickerDialog.show() }) {
                 Text(fechaNacimiento)
             }
         }
-
-
-
 
         var expanded by remember { mutableStateOf(false) }
         Box {
