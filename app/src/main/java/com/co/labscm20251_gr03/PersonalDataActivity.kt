@@ -80,6 +80,7 @@ fun Formulario() {
     val opcionesDeSexo = listOf("Hombre","Mujer","Otro","Prefiero no decirlo")
     val (sexoElegido, onOptionSelected) = rememberSaveable { mutableStateOf(opcionesDeSexo[3]) }
 
+
     val datePickerDialog = DatePickerDialog(
         LocalContext.current,
         { _, year, month, dayOfMonth ->
@@ -171,8 +172,12 @@ fun Formulario() {
             }
         }
 
-        Button(onClick = { println("la buena, pero falta validar los campos obligatorios") }) {
-            Text("Siguiente") //Todo: validar los campos obligatorios
+        Button(onClick = {    if(nombre == "" || apellidos == "" || fechaNacimiento == "Seleccionar fecha"){
+            println("paila mi rey")
+        } }) {
+            Text("Siguiente")
+
+
         }
 
     }
