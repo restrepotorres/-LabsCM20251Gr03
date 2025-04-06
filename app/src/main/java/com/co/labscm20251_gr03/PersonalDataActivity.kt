@@ -92,7 +92,7 @@ fun Formulario() {
             onValueChange = { nombre = it },
             label = { Text("Nombres*") },
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
+                capitalization = KeyboardCapitalization.Characters,
                 autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next,
@@ -103,7 +103,7 @@ fun Formulario() {
             onValueChange = { apellidos = it },
             label = { Text("Apellidos*") },
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
+                capitalization = KeyboardCapitalization.Characters,
                 autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
@@ -162,7 +162,7 @@ fun Formulario() {
             }
         }
 
-        Button(onClick = {    if(nombre == "" || apellidos == "" || fechaNacimiento == "Seleccionar fecha"){
+        Button(onClick = {    if(nombre == "" || apellidos == "" || fechaNacimiento == "Seleccionar fecha" ){
             println("paila mi rey")
 
         }else{

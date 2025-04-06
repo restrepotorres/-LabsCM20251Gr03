@@ -82,11 +82,11 @@ fun data(){
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
-            label = { Text("Telefono") },
+            label = { Text("Teléfono") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrectEnabled = false,
-                keyboardType = KeyboardType.Text,
+                keyboardType = KeyboardType.Number,
                 imeAction = ImeAction.Next,
             )
         )
@@ -97,7 +97,7 @@ fun data(){
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrectEnabled = false,
-                keyboardType = KeyboardType.Text,
+                keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             )
         )
@@ -138,7 +138,12 @@ fun data(){
                 imeAction = ImeAction.Next
             )
         )
-        Button(onClick = {}) {
+        Button(onClick = {
+            if(false ){
+                println("validarrrr!!!!!")//TODO: validaciones
+            }
+
+        }) {
             Text("Siguiente")
         }
     }
