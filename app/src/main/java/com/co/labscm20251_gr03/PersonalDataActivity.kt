@@ -29,6 +29,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -65,13 +66,13 @@ fun Greeting(name: String, modifier: Modifier = Modifier) {
 @Composable
 fun Formulario() {
     var nombres: String
-    var nombre by remember { mutableStateOf(TextFieldValue()) }
-    var apellidos by remember { mutableStateOf(TextFieldValue()) }
-    var sexo by remember { mutableStateOf("") }
-    var fechaNacimiento by remember { mutableStateOf("Seleccionar fecha") }
-    var escolaridad by remember {mutableStateOf("")}
+    var nombre by rememberSaveable { mutableStateOf("")}
+    var apellidos by rememberSaveable { mutableStateOf("")}
+    var sexo by rememberSaveable { mutableStateOf("")}
+    var fechaNacimiento by rememberSaveable { mutableStateOf("Seleccionar fecha") }
+    var escolaridad by rememberSaveable {mutableStateOf("")}
     val opcionesEscolaridad = listOf("Primaria", "Secundaria", "Universitaria", "Otro")
-    var expanded by remember { mutableStateOf(false) }
+    var expanded by rememberSaveable { mutableStateOf(false) }
 
 
 
@@ -99,7 +100,7 @@ fun Formulario() {
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrectEnabled = false,
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Next,
             )
         )
         OutlinedTextField(
