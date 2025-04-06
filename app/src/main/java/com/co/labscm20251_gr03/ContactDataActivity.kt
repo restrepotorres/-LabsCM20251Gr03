@@ -38,12 +38,12 @@ import androidx.compose.ui.unit.dp
 import com.co.labscm20251_gr03.ui.theme.LabsCM20251Gr03Theme
 import java.util.Calendar
 
-class PersonalDataActivity : ComponentActivity() {
+class ContactDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Formulario()
+            data()
 
         }
     }
@@ -51,15 +51,7 @@ class PersonalDataActivity : ComponentActivity() {
 
 
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Composable
-fun Formulario() {
+fun data(){
     var nombre by rememberSaveable { mutableStateOf("")}
     var apellidos by rememberSaveable { mutableStateOf("")}
     val context = LocalContext.current
@@ -85,12 +77,12 @@ fun Formulario() {
         modifier = Modifier.padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Text(text = "Información Personal")
+        Text(text = "Información de Contacto")
 
         OutlinedTextField(
             value = nombre,
             onValueChange = { nombre = it },
-            label = { Text("Nombres*") },
+            label = { Text("Telefono") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrectEnabled = false,
@@ -101,7 +93,7 @@ fun Formulario() {
         OutlinedTextField(
             value = apellidos,
             onValueChange = { apellidos = it },
-            label = { Text("Apellidos*") },
+            label = { Text("Correo") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
                 autoCorrectEnabled = false,
@@ -110,78 +102,54 @@ fun Formulario() {
             )
         )
 
-        Text(text = "Sexo*")
-
-        Column (modifier = Modifier.selectableGroup()){
-            opcionesDeSexo.forEach { opcion -> Row (Modifier.selectable(
-                selected = (opcion == sexoElegido),
-                onClick = { onOptionSelected(opcion) },
-                role = Role.RadioButton
+        OutlinedTextField(
+            value = apellidos,
+            onValueChange = { apellidos = it },
+            label = { Text("País") },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                autoCorrectEnabled = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
             )
-            ){
-                RadioButton(
-                    selected = (opcion == sexoElegido),
-                    onClick = null
-                )
+        )
 
-                Text(
-                    text = opcion,
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.padding(start = 16.dp)
-                )
+        OutlinedTextField(
+            value = apellidos,
+            onValueChange = { apellidos = it },
+            label = { Text("Ciudad") },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                autoCorrectEnabled = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
+        )
 
 
-            } }
-        }
-
-        Row{
-            Text(text = "Fecha de Nacimiento*")
-            Button(onClick = { datePickerDialog.show() }) {
-                Text(fechaNacimiento)
-            }
-        }
-
-        var expanded by remember { mutableStateOf(false) }
-        Box {
-            Button(onClick = { expanded = true }) {
-                Text( if (escolaridad == "") "Escolaridad" else escolaridad, style = MaterialTheme.typography.bodyLarge)
-            }
-            DropdownMenu(
-                expanded = expanded,
-                onDismissRequest = { expanded = false }
-            ) {
-                opcionesEscolaridad.forEach { opcion ->
-                    DropdownMenuItem(
-                        text = { Text(opcion) },
-                        onClick = {
-                            escolaridad = opcion
-                            expanded = false
-                        }
-                    )
-                }
-            }
-        }
-
-        Button(onClick = {    if(nombre == "" || apellidos == "" || fechaNacimiento == "Seleccionar fecha"){
-            println("paila mi rey")
-
-        }else{
-            val intent = Intent(context, ContactDataActivity::class.java)
-            context.startActivity(intent)
-        }
-        }) {
+        OutlinedTextField(
+            value = apellidos,
+            onValueChange = { apellidos = it },
+            label = { Text("Dirección") },
+            keyboardOptions = KeyboardOptions(
+                capitalization = KeyboardCapitalization.Words,
+                autoCorrectEnabled = false,
+                keyboardType = KeyboardType.Text,
+                imeAction = ImeAction.Next
+            )
+        )
+        Button(onClick = {}) {
             Text("Siguiente")
-
-
         }
-
     }
 }
 
+
+
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun dataPreview() {
     LabsCM20251Gr03Theme {
-        Formulario()
+        data()
     }
 }
