@@ -3,6 +3,8 @@ package com.co.labscm20251_gr03
 import android.app.DatePickerDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -43,7 +45,7 @@ class ContactDataActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            data()
+            Data()
 
         }
     }
@@ -51,27 +53,13 @@ class ContactDataActivity : ComponentActivity() {
 
 
 @Composable
-fun data(){
-    var nombre by rememberSaveable { mutableStateOf("")}
-    var apellidos by rememberSaveable { mutableStateOf("")}
+fun Data() {
+    var telefono by rememberSaveable { mutableStateOf("") }
+    var correo by rememberSaveable { mutableStateOf("") }
+    var pais by rememberSaveable { mutableStateOf("") }
+    var ciudad by rememberSaveable { mutableStateOf("") }
+    var direccion by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
-    var fechaNacimiento by rememberSaveable { mutableStateOf("Seleccionar fecha") }
-    var escolaridad by rememberSaveable {mutableStateOf("")}
-    val opcionesEscolaridad = listOf("Primaria", "Secundaria", "Universitaria", "Otro")
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    val opcionesDeSexo = listOf("Hombre","Mujer","Otro","Prefiero no decirlo")
-    val (sexoElegido, onOptionSelected) = rememberSaveable { mutableStateOf(opcionesDeSexo[3]) }
-
-
-    val datePickerDialog = DatePickerDialog(
-        LocalContext.current,
-        { _, year, month, dayOfMonth ->
-            fechaNacimiento = "$dayOfMonth/${month + 1}/$year"
-        },
-        Calendar.getInstance().get(Calendar.YEAR),
-        Calendar.getInstance().get(Calendar.MONTH),
-        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-    )
 
     Column(
         modifier = Modifier.padding(16.dp),
@@ -80,69 +68,83 @@ fun data(){
         Text(text = "Información de Contacto")
 
         OutlinedTextField(
-            value = nombre,
-            onValueChange = { nombre = it },
-            label = { Text("Teléfono") },
+            value = telefono,
+            onValueChange = { telefono = it },
+            label = { Text("Teléfono*") },
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                autoCorrectEnabled = false,
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = false,
                 keyboardType = KeyboardType.Number,
-                imeAction = ImeAction.Next,
+                imeAction = ImeAction.Next
             )
         )
+
         OutlinedTextField(
-            value = apellidos,
-            onValueChange = { apellidos = it },
-            label = { Text("Correo") },
+            value = correo,
+            onValueChange = { correo = it },
+            label = { Text("Correo*") },
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Words,
-                autoCorrectEnabled = false,
+                capitalization = KeyboardCapitalization.None,
+                autoCorrect = false,
                 keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             )
         )
 
         OutlinedTextField(
-            value = apellidos,
-            onValueChange = { apellidos = it },
-            label = { Text("País") },
+            value = pais,
+            onValueChange = { pais = it },
+            label = { Text("País*") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
-                autoCorrectEnabled = false,
+                autoCorrect = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             )
         )
 
         OutlinedTextField(
-            value = apellidos,
-            onValueChange = { apellidos = it },
+            value = ciudad,
+            onValueChange = { ciudad = it },
             label = { Text("Ciudad") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
-                autoCorrectEnabled = false,
+                autoCorrect = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
             )
         )
 
-
         OutlinedTextField(
-            value = apellidos,
-            onValueChange = { apellidos = it },
+            value = direccion,
+            onValueChange = { direccion = it },
             label = { Text("Dirección") },
             keyboardOptions = KeyboardOptions(
                 capitalization = KeyboardCapitalization.Words,
-                autoCorrectEnabled = false,
+                autoCorrect = false,
                 keyboardType = KeyboardType.Text,
-                imeAction = ImeAction.Next
+                imeAction = ImeAction.Done
             )
         )
-        Button(onClick = {
-            if(false ){
-                println("validarrrr!!!!!")//TODO: validaciones
-            }
 
+        Button(onClick = {
+            //Lo siguiente es para imprimir por consola
+            val direccionLinea = if (direccion.isNotBlank()) "Dirección: $direccion                (es campo opcional)\n\n" else ""
+            val ciudadLinea = if (ciudad.isNotBlank()) "Ciudad: $ciudad                                      (es campo opcional)\n" else ""
+            val mensaje = """
+                    Información de contacto: 
+                    Teléfono: $telefono 
+                    $direccionLinea
+                    Email: $correo 
+                    País: $pais 
+                    $ciudadLinea
+                """.trimIndent()
+            Log.d("Formulario", mensaje)
+            if (telefono.isBlank() || correo.isBlank() || pais.isBlank()) {
+                Toast.makeText(context, "Por favor completa los campos obligatorios", Toast.LENGTH_SHORT).show()
+            } else {
+
+            }
         }) {
             Text("Siguiente")
         }
@@ -150,11 +152,10 @@ fun data(){
 }
 
 
-
 @Preview(showBackground = true)
 @Composable
 fun dataPreview() {
     LabsCM20251Gr03Theme {
-        data()
+        Data()
     }
 }
