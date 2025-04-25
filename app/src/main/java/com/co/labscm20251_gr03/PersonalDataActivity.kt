@@ -107,7 +107,7 @@ fun Formulario() {
             onValueChange = { nombre = it },
             label = { Text("Nombres*") },
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Characters,
+                capitalization = KeyboardCapitalization.Words,
                 autoCorrect = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Next
@@ -122,7 +122,7 @@ fun Formulario() {
             onValueChange = { apellidos = it },
             label = { Text("Apellidos*") },
             keyboardOptions = KeyboardOptions(
-                capitalization = KeyboardCapitalization.Characters,
+                capitalization = KeyboardCapitalization.Words,
                 autoCorrect = false,
                 keyboardType = KeyboardType.Text,
                 imeAction = ImeAction.Done
