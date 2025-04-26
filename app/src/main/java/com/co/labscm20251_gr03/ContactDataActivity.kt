@@ -39,6 +39,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.co.labscm20251_gr03.ui.element.CampoCiudad
 import com.co.labscm20251_gr03.ui.element.CampoPais
+import com.co.labscm20251_gr03.ui.element.Encabezado
 import com.co.labscm20251_gr03.ui.theme.LabsCM20251Gr03Theme
 
 class ContactDataActivity : ComponentActivity() {
@@ -62,135 +63,137 @@ fun Data() {
     var direccion by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
 
-    Column(
-        modifier = Modifier.padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
-    ) {
-        Text(text = "Información de Contacto")
+    Column {
+        Encabezado("Información de Contacto")
 
-        Row (verticalAlignment = Alignment.CenterVertically){
-            Icon(
-                Icons.Rounded.Phone,
-                contentDescription = "Phone Icon",
-                modifier = Modifier.padding(end = 12.dp).size(32.dp)
-            )
-
-            OutlinedTextField(
-                value = telefono,
-                onValueChange = { telefono = it },
-                label = { Text("Teléfono*") },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Number,
-                    imeAction = ImeAction.Next
-                )
-            )
-        }
-
-        Row (verticalAlignment = Alignment.CenterVertically){
-            Icon(
-                Icons.Rounded.Email,
-                contentDescription = "Email Icon",
-                modifier = Modifier.padding(end = 12.dp).size(32.dp)
-            )
-
-            OutlinedTextField(
-                value = correo,
-                onValueChange = { correo = it },
-                label = { Text("Correo*") },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.None,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                )
-            )
-        }
-
-        Row {
-            Box(modifier = Modifier.height(64.dp), contentAlignment = Alignment.CenterStart) {
+        Column(
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(
-                    Icons.Rounded.Place,
-                    contentDescription = "Place Icon",
+                    Icons.Rounded.Phone,
+                    contentDescription = "Phone Icon",
                     modifier = Modifier.padding(end = 12.dp).size(32.dp)
+                )
+
+                OutlinedTextField(
+                    value = telefono,
+                    onValueChange = { telefono = it },
+                    label = { Text("Teléfono*") },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrect = false,
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    )
                 )
             }
 
-            CampoPais(
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Rounded.Email,
+                    contentDescription = "Email Icon",
+                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
+                )
+
+                OutlinedTextField(
+                    value = correo,
+                    onValueChange = { correo = it },
+                    label = { Text("Correo*") },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.None,
+                        autoCorrect = false,
+                        keyboardType = KeyboardType.Email,
+                        imeAction = ImeAction.Next
+                    )
+                )
+            }
+
+            Row {
+                Box(modifier = Modifier.height(64.dp), contentAlignment = Alignment.CenterStart) {
+                    Icon(
+                        Icons.Rounded.Place,
+                        contentDescription = "Place Icon",
+                        modifier = Modifier.padding(end = 12.dp).size(32.dp)
+                    )
+                }
+
+                CampoPais(
                     pais = pais,
                     onPaisChange = { pais = it },
                 )
-        }
+            }
 
-        Row {
-            Box(modifier = Modifier.height(64.dp), contentAlignment = Alignment.CenterStart) {
-                Icon(
-                    Icons.Rounded.Place,
-                    contentDescription = "Place Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
+            Row {
+                Box(modifier = Modifier.height(64.dp), contentAlignment = Alignment.CenterStart) {
+                    Icon(
+                        Icons.Rounded.Place,
+                        contentDescription = "Place Icon",
+                        modifier = Modifier.padding(end = 12.dp).size(32.dp)
+                    )
+                }
+
+                CampoCiudad(
+                    ciudad = ciudad,
+                    onCiudadChange = { ciudad = it },
+                    pais = pais,
                 )
             }
 
-            CampoCiudad(
-                ciudad = ciudad,
-                onCiudadChange = { ciudad = it },
-                pais = pais,
-            )
-        }
-
-        Row (verticalAlignment = Alignment.CenterVertically) {
-            Icon(
-                Icons.Rounded.Home,
-                contentDescription = "Home Icon",
-                modifier = Modifier.padding(end = 12.dp).size(32.dp)
-            )
-
-            OutlinedTextField(
-                value = direccion,
-                onValueChange = { direccion = it },
-                label = { Text("Dirección") },
-                keyboardOptions = KeyboardOptions(
-                    capitalization = KeyboardCapitalization.Words,
-                    autoCorrect = false,
-                    keyboardType = KeyboardType.Text,
-                    imeAction = ImeAction.Done
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    Icons.Rounded.Home,
+                    contentDescription = "Home Icon",
+                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
                 )
-            )
-        }
 
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 32.dp),
-            horizontalArrangement = Arrangement.End
-        ) {
-            Button(onClick = {
-                //Lo siguiente es para imprimir por consola
-                val direccionLinea =
-                    if (direccion.isNotBlank()) "Dirección: $direccion                (es campo opcional)\n\n" else ""
-                val ciudadLinea =
-                    if (ciudad.isNotBlank()) "Ciudad: $ciudad                                      (es campo opcional)\n" else ""
-                val mensaje = """
-                        Información de contacto: 
-                        Teléfono: $telefono 
-                        $direccionLinea
-                        Email: $correo 
-                        País: $pais 
-                        $ciudadLinea
-                    """.trimIndent()
-                Log.d("Formulario", mensaje)
-                if (telefono.isBlank() || correo.isBlank() || pais.isBlank()) {
-                    Toast.makeText(
-                        context,
-                        "Por favor completa los campos obligatorios",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
+                OutlinedTextField(
+                    value = direccion,
+                    onValueChange = { direccion = it },
+                    label = { Text("Dirección") },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Words,
+                        autoCorrect = false,
+                        keyboardType = KeyboardType.Text,
+                        imeAction = ImeAction.Done
+                    )
+                )
+            }
 
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 32.dp),
+                horizontalArrangement = Arrangement.End
+            ) {
+                Button(onClick = {
+                    //Lo siguiente es para imprimir por consola
+                    val direccionLinea =
+                        if (direccion.isNotBlank()) "Dirección: $direccion                (es campo opcional)\n\n" else ""
+                    val ciudadLinea =
+                        if (ciudad.isNotBlank()) "Ciudad: $ciudad                                      (es campo opcional)\n" else ""
+                    val mensaje = """
+                            Información de contacto: 
+                            Teléfono: $telefono 
+                            $direccionLinea
+                            Email: $correo 
+                            País: $pais 
+                            $ciudadLinea
+                        """.trimIndent()
+                    Log.d("Formulario", mensaje)
+                    if (telefono.isBlank() || correo.isBlank() || pais.isBlank()) {
+                        Toast.makeText(
+                            context,
+                            "Por favor completa los campos obligatorios",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+
+                    }
+                }) {
+                    Text("Siguiente")
                 }
-            }) {
-                Text("Siguiente")
             }
         }
     }
