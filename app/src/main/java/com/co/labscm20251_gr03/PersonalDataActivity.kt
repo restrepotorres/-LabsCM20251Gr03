@@ -2,6 +2,7 @@ package com.co.labscm20251_gr03
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -9,31 +10,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.selection.selectable
-import androidx.compose.foundation.selection.selectableGroup
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardActions
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.DateRange
-import androidx.compose.material.icons.rounded.Face
-import androidx.compose.material.icons.rounded.Info
-import androidx.compose.material.icons.rounded.Person
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -44,15 +27,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.co.labscm20251_gr03.ui.element.CampoApellidos
+import com.co.labscm20251_gr03.ui.element.CampoEscolaridad
+import com.co.labscm20251_gr03.ui.element.CampoFechaNacimiento
+import com.co.labscm20251_gr03.ui.element.CampoNombres
+import com.co.labscm20251_gr03.ui.element.CampoSexo
 import com.co.labscm20251_gr03.ui.element.Encabezado
 import com.co.labscm20251_gr03.ui.theme.LabsCM20251Gr03Theme
 import java.util.Calendar
@@ -62,33 +46,21 @@ class PersonalDataActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Formulario()
-
+            FormularioDatosPersonales()
         }
     }
 }
 
-
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Composable
-fun Formulario() {
-    var nombre by rememberSaveable { mutableStateOf("") }
+fun FormularioDatosPersonales() {
+    var nombres by rememberSaveable { mutableStateOf("") }
     var apellidos by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
-    var fechaNacimiento by rememberSaveable { mutableStateOf("Seleccionar fecha") }
+    var fechaNacimiento by rememberSaveable { mutableStateOf("Seleccionar") }
     var escolaridad by rememberSaveable { mutableStateOf("") }
     val opcionesEscolaridad = listOf("Primaria", "Secundaria", "Universitaria", "Otro")
     val opcionesDeSexo = listOf("Hombre", "Mujer", "Otro", "Prefiero no decirlo")
     val (sexoElegido, onOptionSelected) = rememberSaveable { mutableStateOf(opcionesDeSexo[3]) }
-
-    var expanded by rememberSaveable { mutableStateOf(false) }
 
     val focusManager = LocalFocusManager.current
     val apellidoFocusRequester = remember { FocusRequester() }
@@ -102,141 +74,94 @@ fun Formulario() {
         Calendar.getInstance().get(Calendar.MONTH),
         Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
     )
+
+    val configuracion = LocalConfiguration.current
+    val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val scrollState = rememberScrollState()
+
     Column {
-        Encabezado("Información Personal")
+        Encabezado("Información personal")
 
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Column {
-                    Icon(
-                        Icons.Rounded.Person,
-                        contentDescription = "Person Icon",
-                        modifier = Modifier.padding(end = 12.dp).size(32.dp)
+            if (esHorizontal) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    CampoNombres(
+                        nombres = nombres,
+                        onNombresChange = { nombres = it },
+                        apellidoFocusRequester = apellidoFocusRequester
+                    )
+
+                    CampoApellidos(
+                        apellidos = apellidos,
+                        onApellidosChange = { apellidos = it},
+                        focusManager = focusManager,
+                        apellidoFocusRequester = apellidoFocusRequester
                     )
                 }
 
-                OutlinedTextField(
-                    value = nombre,
-                    onValueChange = { nombre = it },
-                    label = { Text("Nombres*") },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        autoCorrect = false,
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Next
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onNext = { apellidoFocusRequester.requestFocus() }
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+
+                    CampoSexo(
+                        opcionesDeSexo = opcionesDeSexo,
+                        sexoElegido = sexoElegido,
+                        onOptionSelected = onOptionSelected
                     )
-                )
-            }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Rounded.Person,
-                    contentDescription = "Person Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
-                )
-                OutlinedTextField(
-                    value = apellidos,
-                    onValueChange = { apellidos = it },
-                    label = { Text("Apellidos*") },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        autoCorrect = false,
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    ),
-                    keyboardActions = KeyboardActions(
-                        onDone = { focusManager.clearFocus() }
-                    ),
-                    modifier = Modifier.focusRequester(apellidoFocusRequester)
-                )
-            }
-
-            Row {
-                Icon(
-                    Icons.Rounded.Face,
-                    contentDescription = "Face Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
-                )
-                Text(text = "Sexo:*", modifier = Modifier.padding(end = 12.dp))
-                Column(modifier = Modifier.selectableGroup()) {
-                    opcionesDeSexo.forEach { opcion ->
-                        Row(
-                            Modifier.selectable(
-                                selected = (opcion == sexoElegido),
-                                onClick = { onOptionSelected(opcion) },
-                                role = Role.RadioButton
-                            )
-                        ) {
-                            RadioButton(
-                                selected = (opcion == sexoElegido),
-                                onClick = null
-                            )
-                            Text(
-                                text = opcion,
-                                style = MaterialTheme.typography.bodyLarge,
-                                modifier = Modifier.padding(start = 16.dp)
-                            )
-                        }
-                    }
+                    CampoFechaNacimiento(
+                        fechaNacimiento = fechaNacimiento,
+                        datePickerDialog = datePickerDialog
+                    )
                 }
-            }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Rounded.DateRange,
-                    contentDescription = "Date Range Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
+                CampoEscolaridad(
+                    escolaridad = escolaridad,
+                    onEscolaridadChange = { escolaridad = it },
+                    opcionesEscolaridad = opcionesEscolaridad,
+                )
+            } else {
+                CampoNombres(
+                    nombres = nombres,
+                    onNombresChange = { nombres = it },
+                    apellidoFocusRequester = apellidoFocusRequester
                 )
 
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(text = "Fecha de Nacimiento:*")
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Button(
-                        shape = RoundedCornerShape(8.dp),
-                        onClick = { datePickerDialog.show() }) {
-                        Text(fechaNacimiento)
-                    }
-                }
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Rounded.Info,
-                    contentDescription = "Info Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
+                CampoApellidos(
+                    apellidos = apellidos,
+                    onApellidosChange = { apellidos = it},
+                    focusManager = focusManager,
+                    apellidoFocusRequester = apellidoFocusRequester
                 )
 
-                Box {
-                    Button(shape = RoundedCornerShape(8.dp), onClick = { expanded = true }) {
-                        Text(
-                            if (escolaridad.isEmpty()) "Escolaridad" else escolaridad,
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                    }
-                    DropdownMenu(
-                        expanded = expanded,
-                        onDismissRequest = { expanded = false }
-                    ) {
-                        opcionesEscolaridad.forEach { opcion ->
-                            DropdownMenuItem(
-                                text = { Text(opcion) },
-                                onClick = {
-                                    escolaridad = opcion
-                                    expanded = false
-                                }
-                            )
-                        }
-                    }
-                }
+                CampoSexo (
+                    opcionesDeSexo = opcionesDeSexo,
+                    sexoElegido = sexoElegido,
+                    onOptionSelected = onOptionSelected
+                )
+
+                CampoFechaNacimiento(
+                    fechaNacimiento = fechaNacimiento,
+                    datePickerDialog = datePickerDialog
+                )
+
+                CampoEscolaridad(
+                    escolaridad = escolaridad,
+                    onEscolaridadChange = { escolaridad = it },
+                    opcionesEscolaridad = opcionesEscolaridad,
+                )
             }
 
             Row(
@@ -247,7 +172,7 @@ fun Formulario() {
             ) {
                 Button(onClick = {
                     //Lo siguiente es para imprimir por consola
-                    val nombreCompleto = "$nombre $apellidos"
+                    val nombreCompleto = "$nombres $apellidos"
                     val sexoLinea =
                         if (sexoElegido != "Prefiero no decirlo") "\n\n$sexoElegido" else ""
                     val escolaridadLinea = if (escolaridad.isNotBlank()) "\n\n$escolaridad" else ""
@@ -257,7 +182,7 @@ fun Formulario() {
                     Nació el $fechaNacimiento$escolaridadLinea """.trimIndent()
                     Log.d("Formulario", mensaje)
 
-                    if (nombre.isBlank() || apellidos.isBlank() || fechaNacimiento == "Seleccionar fecha") {
+                    if (nombres.isBlank() || apellidos.isBlank() || fechaNacimiento == "Seleccionar fecha") {
                         Toast.makeText(
                             context,
                             "Por favor completa todos los campos obligatorios",
@@ -277,8 +202,8 @@ fun Formulario() {
 
 @Preview(showBackground = true)
 @Composable
-fun GreetingPreview() {
+fun FormularioDatosPersonalesPreview() {
     LabsCM20251Gr03Theme {
-        Formulario()
+        FormularioDatosPersonales()
     }
 }

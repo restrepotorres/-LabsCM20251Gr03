@@ -1,5 +1,6 @@
 package com.co.labscm20251_gr03
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -7,22 +8,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Email
-import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.Phone
-import androidx.compose.material.icons.rounded.Place
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,14 +23,15 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.KeyboardCapitalization
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.co.labscm20251_gr03.ui.element.CampoCiudad
+import com.co.labscm20251_gr03.ui.element.CampoCorreo
+import com.co.labscm20251_gr03.ui.element.CampoDireccion
 import com.co.labscm20251_gr03.ui.element.CampoPais
+import com.co.labscm20251_gr03.ui.element.CampoTelefono
 import com.co.labscm20251_gr03.ui.element.Encabezado
 import com.co.labscm20251_gr03.ui.theme.LabsCM20251Gr03Theme
 
@@ -47,15 +40,14 @@ class ContactDataActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            Data()
+            FormularioDatosContacto()
 
         }
     }
 }
 
-
 @Composable
-fun Data() {
+fun FormularioDatosContacto() {
     var telefono by rememberSaveable { mutableStateOf("") }
     var correo by rememberSaveable { mutableStateOf("") }
     var pais by rememberSaveable { mutableStateOf("") }
@@ -63,101 +55,85 @@ fun Data() {
     var direccion by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
 
+    val configuracion = LocalConfiguration.current
+    val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val scrollState = rememberScrollState()
+
     Column {
-        Encabezado("Información de Contacto")
+        Encabezado("Información de contacto")
 
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Rounded.Phone,
-                    contentDescription = "Phone Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
-                )
 
-                OutlinedTextField(
-                    value = telefono,
-                    onValueChange = { telefono = it },
-                    label = { Text("Teléfono*") },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrect = false,
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
-                    )
-                )
-            }
+            if (esHorizontal) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CampoTelefono(
+                            telefono = telefono,
+                            onTelefonoChange = { telefono = it }
+                        )
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Rounded.Email,
-                    contentDescription = "Email Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
-                )
+                        CampoCorreo(
+                            correo = correo,
+                            onCorreoChange = { correo = it }
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CampoPais(
+                            pais = pais,
+                            onPaisChange = { pais = it },
+                        )
 
-                OutlinedTextField(
-                    value = correo,
-                    onValueChange = { correo = it },
-                    label = { Text("Correo*") },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.None,
-                        autoCorrect = false,
-                        keyboardType = KeyboardType.Email,
-                        imeAction = ImeAction.Next
-                    )
-                )
-            }
+                        CampoCiudad(
+                            ciudad = ciudad,
+                            onCiudadChange = { ciudad = it },
+                            pais = pais,
+                        )
+                    }
 
-            Row {
-                Box(modifier = Modifier.height(64.dp), contentAlignment = Alignment.CenterStart) {
-                    Icon(
-                        Icons.Rounded.Place,
-                        contentDescription = "Place Icon",
-                        modifier = Modifier.padding(end = 12.dp).size(32.dp)
+                    CampoDireccion(
+                        direccion = direccion,
+                        onDireccionChange = { direccion = it }
                     )
                 }
+            } else {
+                CampoTelefono(
+                    telefono = telefono,
+                    onTelefonoChange = { telefono = it }
+                )
+
+                CampoCorreo (
+                    correo = correo,
+                    onCorreoChange = { correo = it }
+                )
 
                 CampoPais(
                     pais = pais,
                     onPaisChange = { pais = it },
                 )
-            }
-
-            Row {
-                Box(modifier = Modifier.height(64.dp), contentAlignment = Alignment.CenterStart) {
-                    Icon(
-                        Icons.Rounded.Place,
-                        contentDescription = "Place Icon",
-                        modifier = Modifier.padding(end = 12.dp).size(32.dp)
-                    )
-                }
 
                 CampoCiudad(
                     ciudad = ciudad,
                     onCiudadChange = { ciudad = it },
                     pais = pais,
                 )
-            }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(
-                    Icons.Rounded.Home,
-                    contentDescription = "Home Icon",
-                    modifier = Modifier.padding(end = 12.dp).size(32.dp)
-                )
-
-                OutlinedTextField(
-                    value = direccion,
-                    onValueChange = { direccion = it },
-                    label = { Text("Dirección") },
-                    keyboardOptions = KeyboardOptions(
-                        capitalization = KeyboardCapitalization.Words,
-                        autoCorrect = false,
-                        keyboardType = KeyboardType.Text,
-                        imeAction = ImeAction.Done
-                    )
+                CampoDireccion (
+                    direccion = direccion,
+                    onDireccionChange = { direccion = it }
                 )
             }
 
@@ -202,8 +178,8 @@ fun Data() {
 
 @Preview(showBackground = true)
 @Composable
-fun DataPreview() {
+fun FormularioDatosContactoPreview() {
     LabsCM20251Gr03Theme {
-        Data()
+        FormularioDatosContacto()
     }
 }
