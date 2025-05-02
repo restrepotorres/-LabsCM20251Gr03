@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LabsCM20251-Gr03</string>
+    <string name="personal_info">Personal Information</string>
+    <string name="names">Names*</string>
+    <string name="second_names">Last names*</string>
+    <string name="sex">sex*</string>
+    <string name="birth_date">Birth Date*</string>
+    <string name="select_date">Select Date</string>
+    <string name="schooling_level">Schooling</string>
+    <string name="contact_info">Contact Information</string>
+    <string name="phone">Phone*</string>
+    <string name="mail">Mail*</string>
+    <string name="country">Country*</string>
+    <string name="city">City</string>
+    <string name="address">Address</string>
+    <string name="school_primary">Primary</string>
+    <string name="school_secondary">Secondary</string>
+    <string name="school_university">University</string>
+    <string name="school_other">Other</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
+    <string name="gender_other">Other</string>
+    <string name="gender_rathernot">Rather not say</string>
+    <string name="next_label">Next</string>
+    <string name="alert_mandatory_fields">Please complete the required fields</string>
+    <string name="switch_language">Switch Language</string>
+</resources>
