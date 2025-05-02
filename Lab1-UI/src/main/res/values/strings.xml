@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">LabsCM20251-Gr03</string>
+    <string name="personal_info">Información Personal</string>
+    <string name="names">Nombres*</string>
+    <string name="second_names">Apellidos*</string>
+    <string name="sex">Sexo*</string>
+    <string name="birth_date">Fecha de Nacimiento*</string>
+    <string name="select_date">Seleccionar fecha</string>
+    <string name="schooling_level">Escolaridad</string>
+    <string name="contact_info">Información de Contacto</string>
+    <string name="phone">Teléfono*</string>
+    <string name="mail">Correo*</string>
+    <string name="country">País*</string>
+    <string name="city">Ciudad</string>
+    <string name="address">Dirección</string>
+    <string name="school_primary">Primaria</string>
+    <string name="school_secondary">Secundaria</string>
+    <string name="school_university">Universitaria</string>
+    <string name="school_other">Otro</string>
+    <string name="gender_male">Hombre</string>
+    <string name="gender_female">Mujer</string>
+    <string name="gender_other">Otro</string>
+    <string name="gender_rathernot">Prefiero no decirlo</string>
+    <string name="next_label">Siguiente</string>
+    <string name="alert_mandatory_fields">Por favor completa los campos obligatorios</string>
+    <string name="switch_language">Cambiar idioma</string>
+</resources>
