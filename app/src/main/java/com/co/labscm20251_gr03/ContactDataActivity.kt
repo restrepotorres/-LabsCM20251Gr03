@@ -1,5 +1,6 @@
 package com.co.labscm20251_gr03
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -11,6 +12,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -18,7 +21,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -50,38 +55,87 @@ fun FormularioDatosContacto() {
     var direccion by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
 
+    val configuracion = LocalConfiguration.current
+    val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val scrollState = rememberScrollState()
+
     Column {
         Encabezado("Información de contacto")
 
         Column(
-            modifier = Modifier.padding(16.dp),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            CampoTelefono(
-                telefono = telefono,
-                onTelefonoChange = { telefono = it }
-            )
 
-            CampoCorreo (
-                correo = correo,
-                onCorreoChange = { correo = it }
-            )
+            if (esHorizontal) {
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CampoTelefono(
+                            telefono = telefono,
+                            onTelefonoChange = { telefono = it }
+                        )
 
-            CampoPais(
-                pais = pais,
-                onPaisChange = { pais = it },
-            )
+                        CampoCorreo(
+                            correo = correo,
+                            onCorreoChange = { correo = it }
+                        )
+                    }
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(16.dp)
+                    ) {
+                        CampoPais(
+                            pais = pais,
+                            onPaisChange = { pais = it },
+                        )
 
-            CampoCiudad(
-                ciudad = ciudad,
-                onCiudadChange = { ciudad = it },
-                pais = pais,
-            )
+                        CampoCiudad(
+                            ciudad = ciudad,
+                            onCiudadChange = { ciudad = it },
+                            pais = pais,
+                        )
+                    }
 
-            CampoDireccion (
-                direccion = direccion,
-                onDireccionChange = { direccion = it }
-            )
+                    CampoDireccion(
+                        direccion = direccion,
+                        onDireccionChange = { direccion = it }
+                    )
+                }
+            } else {
+                CampoTelefono(
+                    telefono = telefono,
+                    onTelefonoChange = { telefono = it }
+                )
+
+                CampoCorreo (
+                    correo = correo,
+                    onCorreoChange = { correo = it }
+                )
+
+                CampoPais(
+                    pais = pais,
+                    onPaisChange = { pais = it },
+                )
+
+                CampoCiudad(
+                    ciudad = ciudad,
+                    onCiudadChange = { ciudad = it },
+                    pais = pais,
+                )
+
+                CampoDireccion (
+                    direccion = direccion,
+                    onDireccionChange = { direccion = it }
+                )
+            }
 
             Row(
                 modifier = Modifier

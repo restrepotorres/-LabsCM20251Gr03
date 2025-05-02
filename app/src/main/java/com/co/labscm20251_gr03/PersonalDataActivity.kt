@@ -2,6 +2,7 @@ package com.co.labscm20251_gr03
 
 import android.app.DatePickerDialog
 import android.content.Intent
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,8 +24,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.tooling.preview.Preview
@@ -69,45 +74,95 @@ fun FormularioDatosPersonales() {
         Calendar.getInstance().get(Calendar.MONTH),
         Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
     )
+
+    val configuracion = LocalConfiguration.current
+    val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
+    val scrollState = rememberScrollState()
+
     Column {
         Encabezado("Información personal")
 
         Column(
             modifier = Modifier
                 .padding(16.dp)
-                .fillMaxWidth(),
+                .fillMaxWidth()
+                .verticalScroll(scrollState),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
 
-            CampoNombres(
-                nombres = nombres,
-                onNombresChange = { nombres = it },
-                apellidoFocusRequester = apellidoFocusRequester
-            )
+            if (esHorizontal) {
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    CampoNombres(
+                        nombres = nombres,
+                        onNombresChange = { nombres = it },
+                        apellidoFocusRequester = apellidoFocusRequester
+                    )
 
-            CampoApellidos(
-                apellidos = apellidos,
-                onApellidosChange = { apellidos = it},
-                focusManager = focusManager,
-                apellidoFocusRequester = apellidoFocusRequester
-            )
+                    CampoApellidos(
+                        apellidos = apellidos,
+                        onApellidosChange = { apellidos = it},
+                        focusManager = focusManager,
+                        apellidoFocusRequester = apellidoFocusRequester
+                    )
+                }
 
-            CampoSexo (
-                opcionesDeSexo = opcionesDeSexo,
-                sexoElegido = sexoElegido,
-                onOptionSelected = onOptionSelected
-            )
+                Column(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
 
-            CampoFechaNacimiento(
-                fechaNacimiento = fechaNacimiento,
-                datePickerDialog = datePickerDialog
-            )
+                    CampoSexo(
+                        opcionesDeSexo = opcionesDeSexo,
+                        sexoElegido = sexoElegido,
+                        onOptionSelected = onOptionSelected
+                    )
 
-            CampoEscolaridad(
-                escolaridad = escolaridad,
-                onEscolaridadChange = { escolaridad = it },
-                opcionesEscolaridad = opcionesEscolaridad,
-            )
+                    CampoFechaNacimiento(
+                        fechaNacimiento = fechaNacimiento,
+                        datePickerDialog = datePickerDialog
+                    )
+                }
+
+                CampoEscolaridad(
+                    escolaridad = escolaridad,
+                    onEscolaridadChange = { escolaridad = it },
+                    opcionesEscolaridad = opcionesEscolaridad,
+                )
+            } else {
+                CampoNombres(
+                    nombres = nombres,
+                    onNombresChange = { nombres = it },
+                    apellidoFocusRequester = apellidoFocusRequester
+                )
+
+                CampoApellidos(
+                    apellidos = apellidos,
+                    onApellidosChange = { apellidos = it},
+                    focusManager = focusManager,
+                    apellidoFocusRequester = apellidoFocusRequester
+                )
+
+                CampoSexo (
+                    opcionesDeSexo = opcionesDeSexo,
+                    sexoElegido = sexoElegido,
+                    onOptionSelected = onOptionSelected
+                )
+
+                CampoFechaNacimiento(
+                    fechaNacimiento = fechaNacimiento,
+                    datePickerDialog = datePickerDialog
+                )
+
+                CampoEscolaridad(
+                    escolaridad = escolaridad,
+                    onEscolaridadChange = { escolaridad = it },
+                    opcionesEscolaridad = opcionesEscolaridad,
+                )
+            }
 
             Row(
                 modifier = Modifier
