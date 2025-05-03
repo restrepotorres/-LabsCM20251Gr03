@@ -1,7 +1,5 @@
 package com.co.labscm20251_gr03
 
-import android.app.Activity
-import android.app.DatePickerDialog
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
@@ -20,11 +18,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
@@ -34,6 +28,8 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.co.labscm20251_gr03.ui.PersonalDataViewModel
 import com.co.labscm20251_gr03.ui.element.CampoApellidos
 import com.co.labscm20251_gr03.ui.element.CampoEscolaridad
 import com.co.labscm20251_gr03.ui.element.CampoFechaNacimiento
@@ -41,54 +37,50 @@ import com.co.labscm20251_gr03.ui.element.CampoNombres
 import com.co.labscm20251_gr03.ui.element.CampoSexo
 import com.co.labscm20251_gr03.ui.element.Encabezado
 import com.co.labscm20251_gr03.ui.theme.LabsCM20251Gr03Theme
-import java.util.Calendar
 
 class PersonalDataActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FormularioDatosPersonales()
+            val vm: PersonalDataViewModel = viewModel()
+
+            FormularioDatosPersonales(
+                nombres            = vm.nombres,
+                onNombresChange    = vm::onNombresChange,
+                apellidos         = vm.apellidos,
+                onApellidosChange = vm::onApellidosChange,
+                fechaNacimiento   = vm.fechaNacimiento,
+                onFechaChange     = vm::onFechaChange,
+                escolaridad       = vm.escolaridad,
+                onEscolaridadChange = vm::onEscolaridadChange,
+                sexoElegido        = vm.sexoElegido,
+                onSexoSelected      = vm::onSexoSelected
+            )
         }
     }
 }
 
 @Composable
-fun FormularioDatosPersonales() {
-    var nombres by rememberSaveable { mutableStateOf("") }
-    var apellidos by rememberSaveable { mutableStateOf("") }
+fun FormularioDatosPersonales(
+    nombres: String,
+    onNombresChange: (String) -> Unit,
+    apellidos: String,
+    onApellidosChange: (String) -> Unit,
+    fechaNacimiento: Long?,
+    onFechaChange: (Long) -> Unit,
+    escolaridad: String,
+    onEscolaridadChange: (String) -> Unit,
+    sexoElegido: Int,
+    onSexoSelected: (Int) -> Unit,
+) {
     val context = LocalContext.current
-    val activity = context as? Activity
-    val defaultFecha = stringResource(R.string.select_date)
-    val requiredFieldAlert = stringResource(R.string.alert_mandatory_fields)
-    var fechaNacimiento by rememberSaveable { mutableStateOf(defaultFecha) }
-    var escolaridad by rememberSaveable { mutableStateOf("") }
-    val opcionesEscolaridad = listOf(stringResource(R.string.school_primary),
-        stringResource(R.string.school_secondary),
-        stringResource(R.string.school_university),
-        stringResource(R.string.school_other))
-    val opcionesDeSexo = listOf(stringResource(R.string.gender_male),
-        stringResource(R.string.gender_female),
-        stringResource(R.string.gender_other),
-        stringResource(R.string.gender_rathernot))
-    val (sexoElegido, onOptionSelected) = rememberSaveable { mutableStateOf(opcionesDeSexo[3]) }
-
-    val focusManager = LocalFocusManager.current
-    val apellidoFocusRequester = remember { FocusRequester() }
-
-    val datePickerDialog = DatePickerDialog(
-        LocalContext.current,
-        { _, year, month, dayOfMonth ->
-            fechaNacimiento = "$dayOfMonth/${month + 1}/$year"
-        },
-        Calendar.getInstance().get(Calendar.YEAR),
-        Calendar.getInstance().get(Calendar.MONTH),
-        Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-    )
-
+    val scrollState = rememberScrollState()
     val configuracion = LocalConfiguration.current
     val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val scrollState = rememberScrollState()
+    val focusManager = LocalFocusManager.current
+    val apellidoFocusRequester = remember { FocusRequester() }
+    val requiredFieldAlert = stringResource(R.string.alert_mandatory_fields)
 
     Column {
         Encabezado(stringResource(R.string.personal_info))
@@ -108,13 +100,13 @@ fun FormularioDatosPersonales() {
                 ) {
                     CampoNombres(
                         nombres = nombres,
-                        onNombresChange = { nombres = it },
+                        onNombresChange = onNombresChange,
                         apellidoFocusRequester = apellidoFocusRequester
                     )
 
                     CampoApellidos(
                         apellidos = apellidos,
-                        onApellidosChange = { apellidos = it},
+                        onApellidosChange = onApellidosChange,
                         focusManager = focusManager,
                         apellidoFocusRequester = apellidoFocusRequester
                     )
@@ -127,51 +119,47 @@ fun FormularioDatosPersonales() {
                 ) {
 
                     CampoSexo(
-                        opcionesDeSexo = opcionesDeSexo,
                         sexoElegido = sexoElegido,
-                        onOptionSelected = onOptionSelected
+                        onSexoSelected = onSexoSelected
                     )
 
                     CampoFechaNacimiento(
                         fechaNacimiento = fechaNacimiento,
-                        datePickerDialog = datePickerDialog
+                        onFechaChange = onFechaChange
                     )
                 }
 
                 CampoEscolaridad(
                     escolaridad = escolaridad,
-                    onEscolaridadChange = { escolaridad = it },
-                    opcionesEscolaridad = opcionesEscolaridad,
+                    onEscolaridadChange = onEscolaridadChange,
                 )
             } else {
                 CampoNombres(
                     nombres = nombres,
-                    onNombresChange = { nombres = it },
+                    onNombresChange = onNombresChange,
                     apellidoFocusRequester = apellidoFocusRequester
                 )
 
                 CampoApellidos(
                     apellidos = apellidos,
-                    onApellidosChange = { apellidos = it},
+                    onApellidosChange = onApellidosChange,
                     focusManager = focusManager,
                     apellidoFocusRequester = apellidoFocusRequester
                 )
 
                 CampoSexo (
-                    opcionesDeSexo = opcionesDeSexo,
                     sexoElegido = sexoElegido,
-                    onOptionSelected = onOptionSelected
+                    onSexoSelected = onSexoSelected
                 )
 
                 CampoFechaNacimiento(
                     fechaNacimiento = fechaNacimiento,
-                    datePickerDialog = datePickerDialog
+                    onFechaChange = onFechaChange
                 )
 
                 CampoEscolaridad(
                     escolaridad = escolaridad,
-                    onEscolaridadChange = { escolaridad = it },
-                    opcionesEscolaridad = opcionesEscolaridad,
+                    onEscolaridadChange = onEscolaridadChange,
                 )
             }
 
@@ -185,7 +173,7 @@ fun FormularioDatosPersonales() {
                     //Lo siguiente es para imprimir por consola
                     val nombreCompleto = "$nombres $apellidos"
                     val sexoLinea =
-                        if (sexoElegido != "Prefiero no decirlo") "\n\n$sexoElegido" else ""
+                        if (sexoElegido != 3) "\n\n$sexoElegido" else ""
                     val escolaridadLinea = if (escolaridad.isNotBlank()) "\n\n$escolaridad" else ""
                     val mensaje = """
                     Información personal: 
@@ -193,7 +181,7 @@ fun FormularioDatosPersonales() {
                     Nació el $fechaNacimiento$escolaridadLinea """.trimIndent()
                     Log.d("Formulario", mensaje)
 
-                    if (nombres.isBlank() || apellidos.isBlank() || fechaNacimiento == "Seleccionar fecha") {
+                    if (nombres.isBlank() || apellidos.isBlank() || fechaNacimiento == null) {
                         Toast.makeText(
                             context,
                             requiredFieldAlert,
@@ -215,6 +203,19 @@ fun FormularioDatosPersonales() {
 @Composable
 fun FormularioDatosPersonalesPreview() {
     LabsCM20251Gr03Theme {
-        FormularioDatosPersonales()
+        val vm: PersonalDataViewModel = viewModel()
+
+        FormularioDatosPersonales(
+            nombres            = vm.nombres,
+            onNombresChange    = vm::onNombresChange,
+            apellidos         = vm.apellidos,
+            onApellidosChange = vm::onApellidosChange,
+            fechaNacimiento   = vm.fechaNacimiento,
+            onFechaChange     = vm::onFechaChange,
+            escolaridad       = vm.escolaridad,
+            onEscolaridadChange = vm::onEscolaridadChange,
+            sexoElegido        = vm.sexoElegido,
+            onSexoSelected      = vm::onSexoSelected
+        )
     }
 }

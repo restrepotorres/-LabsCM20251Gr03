@@ -17,10 +17,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -28,6 +24,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.co.labscm20251_gr03.ui.ContactDataViewModel
 import com.co.labscm20251_gr03.ui.element.CampoCiudad
 import com.co.labscm20251_gr03.ui.element.CampoCorreo
 import com.co.labscm20251_gr03.ui.element.CampoDireccion
@@ -41,24 +39,42 @@ class ContactDataActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
-            FormularioDatosContacto()
+            val vm: ContactDataViewModel = viewModel()
 
+            FormularioDatosContacto(
+                telefono = vm.telefono,
+                onTelefonoChange = vm::onTelefonoChange,
+                correo = vm.correo,
+                onCorreoChange = vm::onCorreoChange,
+                pais = vm.pais,
+                onPaisChange = vm::onPaisChange,
+                ciudad = vm.ciudad,
+                onCiudadChange = vm::onCiudadChange,
+                direccion = vm.direccion,
+                onDireccionChange = vm::onDireccionChange
+            )
         }
     }
 }
 
 @Composable
-fun FormularioDatosContacto() {
-    var telefono by rememberSaveable { mutableStateOf("") }
-    var correo by rememberSaveable { mutableStateOf("") }
-    var pais by rememberSaveable { mutableStateOf("") }
-    var ciudad by rememberSaveable { mutableStateOf("") }
-    var direccion by rememberSaveable { mutableStateOf("") }
+fun FormularioDatosContacto(
+    telefono: String,
+    onTelefonoChange: (String) -> Unit,
+    correo: String,
+    onCorreoChange: (String) -> Unit,
+    pais: String,
+    onPaisChange: (String) -> Unit,
+    ciudad: String,
+    onCiudadChange: (String) -> Unit,
+    direccion: String,
+    onDireccionChange: (String) -> Unit
+) {
     val context = LocalContext.current
-
+    val scrollState = rememberScrollState()
     val configuracion = LocalConfiguration.current
     val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val scrollState = rememberScrollState()
+    val requiredFieldAlert = stringResource(R.string.alert_mandatory_fields)
 
     Column {
         Encabezado(stringResource(R.string.contact_info))
@@ -82,12 +98,12 @@ fun FormularioDatosContacto() {
                     ) {
                         CampoTelefono(
                             telefono = telefono,
-                            onTelefonoChange = { telefono = it }
+                            onTelefonoChange = onTelefonoChange
                         )
 
                         CampoCorreo(
                             correo = correo,
-                            onCorreoChange = { correo = it }
+                            onCorreoChange = onCorreoChange
                         )
                     }
                     Row(
@@ -95,46 +111,46 @@ fun FormularioDatosContacto() {
                     ) {
                         CampoPais(
                             pais = pais,
-                            onPaisChange = { pais = it },
+                            onPaisChange = onPaisChange,
                         )
 
                         CampoCiudad(
                             ciudad = ciudad,
-                            onCiudadChange = { ciudad = it },
+                            onCiudadChange = onCiudadChange,
                             pais = pais,
                         )
                     }
 
                     CampoDireccion(
                         direccion = direccion,
-                        onDireccionChange = { direccion = it }
+                        onDireccionChange = onDireccionChange
                     )
                 }
             } else {
                 CampoTelefono(
                     telefono = telefono,
-                    onTelefonoChange = { telefono = it }
+                    onTelefonoChange = onTelefonoChange
                 )
 
                 CampoCorreo (
                     correo = correo,
-                    onCorreoChange = { correo = it }
+                    onCorreoChange = onCorreoChange
                 )
 
                 CampoPais(
                     pais = pais,
-                    onPaisChange = { pais = it },
+                    onPaisChange = onPaisChange,
                 )
 
                 CampoCiudad(
                     ciudad = ciudad,
-                    onCiudadChange = { ciudad = it },
+                    onCiudadChange = onCiudadChange,
                     pais = pais,
                 )
 
                 CampoDireccion (
                     direccion = direccion,
-                    onDireccionChange = { direccion = it }
+                    onDireccionChange = onDireccionChange
                 )
             }
 
@@ -162,7 +178,7 @@ fun FormularioDatosContacto() {
                     if (telefono.isBlank() || correo.isBlank() || pais.isBlank()) {
                         Toast.makeText(
                             context,
-                            "Por favor completa los campos obligatorios",
+                            requiredFieldAlert,
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
@@ -181,6 +197,19 @@ fun FormularioDatosContacto() {
 @Composable
 fun FormularioDatosContactoPreview() {
     LabsCM20251Gr03Theme {
-        FormularioDatosContacto()
+        val vm: ContactDataViewModel = viewModel()
+
+        FormularioDatosContacto(
+            telefono = vm.telefono,
+            onTelefonoChange = vm::onTelefonoChange,
+            correo = vm.correo,
+            onCorreoChange = vm::onCorreoChange,
+            pais = vm.pais,
+            onPaisChange = vm::onPaisChange,
+            ciudad = vm.ciudad,
+            onCiudadChange = vm::onCiudadChange,
+            direccion = vm.direccion,
+            onDireccionChange = vm::onDireccionChange
+        )
     }
 }
