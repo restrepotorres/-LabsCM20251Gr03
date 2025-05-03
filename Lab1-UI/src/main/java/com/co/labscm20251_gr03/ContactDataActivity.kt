@@ -42,7 +42,6 @@ class ContactDataActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             FormularioDatosContacto()
-
         }
     }
 }
@@ -55,6 +54,7 @@ fun FormularioDatosContacto() {
     var ciudad by rememberSaveable { mutableStateOf("") }
     var direccion by rememberSaveable { mutableStateOf("") }
     val context = LocalContext.current
+    val requiredFieldAlert = stringResource(R.string.alert_mandatory_fields)
 
     val configuracion = LocalConfiguration.current
     val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
@@ -162,7 +162,7 @@ fun FormularioDatosContacto() {
                     if (telefono.isBlank() || correo.isBlank() || pais.isBlank()) {
                         Toast.makeText(
                             context,
-                            "Por favor completa los campos obligatorios",
+                            requiredFieldAlert,
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {

@@ -26,7 +26,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,10 +44,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.co.labscm20251_gr03.util.obtenerCiudades
-import com.co.labscm20251_gr03.util.obtenerPaises
-import androidx.compose.ui.res.stringResource
 import com.co.labscm20251_gr03.R
+import java.util.Calendar
 
 @Composable
 fun CampoNombres(
@@ -115,10 +112,14 @@ fun CampoApellidos(
 
 @Composable
 fun CampoSexo (
-    opcionesDeSexo: List<String>,
-    sexoElegido: String,
-    onOptionSelected: (String) -> Unit
+    sexoElegido: Int,
+    onSexoSelected: (Int) -> Unit
 ){
+    val opcionesDeSexo = listOf(stringResource(R.string.gender_male),
+        stringResource(R.string.gender_female),
+        stringResource(R.string.gender_other),
+        stringResource(R.string.gender_rathernot))
+
     Row {
         Icon(
             Icons.Rounded.Face,
@@ -127,16 +128,16 @@ fun CampoSexo (
         )
         Text(text = stringResource(R.string.sex), modifier = Modifier.padding(end = 12.dp))
         Column(modifier = Modifier.selectableGroup()) {
-            opcionesDeSexo.forEach { opcion ->
+            opcionesDeSexo.forEachIndexed { idx, opcion ->
                 Row(
                     Modifier.selectable(
-                        selected = (opcion == sexoElegido),
-                        onClick = { onOptionSelected(opcion) },
+                        selected = (idx == sexoElegido),
+                        onClick = { onSexoSelected(idx) },
                         role = Role.RadioButton
                     )
                 ) {
                     RadioButton(
-                        selected = (opcion == sexoElegido),
+                        selected = (idx == sexoElegido),
                         onClick = null
                     )
                     Text(
@@ -152,9 +153,32 @@ fun CampoSexo (
 
 @Composable
 fun CampoFechaNacimiento(
-    fechaNacimiento: String,
-    datePickerDialog: DatePickerDialog
+    fechaNacimiento: Long?,
+    onFechaChange: (Long) -> Unit,
 ) {
+    val context = LocalContext.current
+    val textoPredeterminado = stringResource(R.string.select_date)
+
+    val textoMostrado = fechaNacimiento?.let {
+        val cal = Calendar.getInstance().apply { timeInMillis = it }
+        "${cal.get(Calendar.DAY_OF_MONTH)}/${cal.get(Calendar.MONTH)+1}/${cal.get(Calendar.YEAR)}"
+    } ?: textoPredeterminado
+
+    val datePicker = remember {
+        DatePickerDialog(
+            context,
+            { _, year, month, dayOfMonth ->
+                val cal = Calendar.getInstance().apply {
+                    set(year, month, dayOfMonth)
+                }
+                onFechaChange(cal.timeInMillis)
+            },
+            Calendar.getInstance().get(Calendar.YEAR),
+            Calendar.getInstance().get(Calendar.MONTH),
+            Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        )
+    }
+
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(
             Icons.Rounded.DateRange,
@@ -167,8 +191,8 @@ fun CampoFechaNacimiento(
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 shape = RoundedCornerShape(8.dp),
-                onClick = { datePickerDialog.show() }) {
-                Text(fechaNacimiento)
+                onClick = { datePicker.show() }) {
+                Text(textoMostrado)
             }
         }
     }
@@ -178,10 +202,14 @@ fun CampoFechaNacimiento(
 fun CampoEscolaridad (
     escolaridad: String,
     onEscolaridadChange: (String) -> Unit,
-    opcionesEscolaridad: List<String>,
 
 ) {
     var expanded by rememberSaveable { mutableStateOf(false) }
+
+    val opcionesEscolaridad = listOf(stringResource(R.string.school_primary),
+        stringResource(R.string.school_secondary),
+        stringResource(R.string.school_university),
+        stringResource(R.string.school_other))
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Icon(

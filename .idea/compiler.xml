@@ -3,6 +3,7 @@
   <component name="CompilerConfiguration">
     <bytecodeTargetLevel target="21">
       <module name="Lab1-UI" target="21" />
+      <module name="LabsCM20251-Gr03.app" target="21" />
     </bytecodeTargetLevel>
   </component>
 </project>
