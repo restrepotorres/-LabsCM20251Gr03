@@ -18,10 +18,9 @@ class PersonalDataViewModel : ViewModel() {
     var sexoElegido by mutableIntStateOf(3)
         private set
 
-    fun onNombresChange(new: String)     { nombres = new }
-    fun onApellidosChange(new: String)  { apellidos = new }
+    fun onNombresChange(new: String) { nombres = new }
+    fun onApellidosChange(new: String) { apellidos = new }
     fun onFechaChange(new: Long) { fechaNacimiento = new }
-    fun onEscolaridadChange(new: String){ escolaridad = new }
+    fun onEscolaridadChange(new: String) { escolaridad = new }
     fun onSexoSelected(index: Int) { sexoElegido = index }
-
 }

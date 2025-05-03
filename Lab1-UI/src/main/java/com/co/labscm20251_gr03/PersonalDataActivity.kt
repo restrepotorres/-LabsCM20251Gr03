@@ -75,15 +75,12 @@ fun FormularioDatosPersonales(
     onSexoSelected: (Int) -> Unit,
 ) {
     val context = LocalContext.current
-    val requiredFieldAlert = stringResource(R.string.alert_mandatory_fields)
-
-
-    val focusManager = LocalFocusManager.current
-    val apellidoFocusRequester = remember { FocusRequester() }
-
+    val scrollState = rememberScrollState()
     val configuracion = LocalConfiguration.current
     val esHorizontal = configuracion.orientation == Configuration.ORIENTATION_LANDSCAPE
-    val scrollState = rememberScrollState()
+    val focusManager = LocalFocusManager.current
+    val apellidoFocusRequester = remember { FocusRequester() }
+    val requiredFieldAlert = stringResource(R.string.alert_mandatory_fields)
 
     Column {
         Encabezado(stringResource(R.string.personal_info))
